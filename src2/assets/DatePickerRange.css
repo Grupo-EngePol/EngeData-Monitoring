@@ -1,0 +1,52 @@
+.Select-control {
+    background-color: #20374c !important;
+}
+
+.Select.is-focused > .Select-control {
+    background-color: #20374c;
+    background-color: #ef6790;
+}
+
+#school-input {
+    color: white;
+}
+
+.Select-value-label {
+    color: white;
+}
+
+.Select--single > .Select-control .Select-value, .Select-placeholder {
+    border: 1px solid white;
+    border-radius: 4px;
+}
+
+.VirtualizedSelectOption {
+    background-color: #20374c;
+    color: white;
+ }
+
+.VirtualizedSelectFocusedOption {
+    background-color: #20374c;
+    opacity: .7;
+}
+
+.Select.is-focused:not(.is-open) > .Select-control {
+    background-color: #222;
+    border-color: var(--primary); 
+    box-shadow: none;
+}
+
+.Select-control {
+    background-color: #20374c !important;
+    color:white;
+  }
+  
+.Select-menu-outer {
+    background-color: rgb(25, 25, 25);
+    color: white;
+}
+
+.Select-value-label {
+    color: white !important;
+}
+
