@@ -40,8 +40,8 @@ load_figure_template(["minty", "minty_dark"])
 color_mode_switch =  html.Span(
     [
         dbc.Label(className="fa fa-moon", html_for="color-mode-switch"),
-        dbc.Switch( id="color-mode-switch_pg3", value=True, className="d-inline-block ms-1", persistence=True),
-        dbc.Label(className="fa fa-sun", html_for="color-mode-switch_pg3"),
+        dbc.Switch( id="color-mode-switch_pg5", value=True, className="d-inline-block ms-1", persistence=True),
+        dbc.Label(className="fa fa-sun", html_for="color-mode-switch_pg5"),
     ]
 )
 
@@ -51,13 +51,13 @@ np.random.seed(2020)
 layout = html.Div(
     [   
         html.Div(color_mode_switch),
-        dcc.Graph(id="histograms-graph"),
+        dcc.Graph(id="histograms-graph5"),
         html.P("Mean:"),
         dcc.Slider(
-            id="histograms-mean", min=-3, max=3, value=0, marks={-3: "-3", 3: "3"}
+            id="histograms-mean5", min=-3, max=3, value=0, marks={-3: "-3", 3: "3"}
         ),
         html.P("Standard Deviation:"),
-        dcc.Slider(id="histograms-std", min=1, max=3, value=1, marks={1: "1", 3: "3"}),
+        dcc.Slider(id="histograms-std5", min=1, max=3, value=1, marks={1: "1", 3: "3"}),
     ]
 )
 
@@ -73,8 +73,8 @@ clientside_callback(
         return window.dash_clientside.no_update
     }
     """,
-    Output("color-mode-switch_pg3", "id"),
-    Input("color-mode-switch_pg3", "value"),
+    Output("color-mode-switch_pg5", "id"),
+    Input("color-mode-switch_pg5", "value"),
 )
 
 

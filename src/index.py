@@ -14,6 +14,8 @@ from dash_bootstrap_templates import load_figure_template
 # import dash_daq as daq
 # import datetime
 # load_figure_template(["minty"])
+import waitress
+from threading import Timer
 
 
 
@@ -21,6 +23,9 @@ from dash_bootstrap_templates import load_figure_template
 from pages.cpx_pg1 import page1
 from pages.cpx_pg2 import page2
 from pages.cpx_pg3 import page3
+from pages.cpx_pg4 import page4
+from pages.cpx_pg5 import page5
+from pages.cpx_pg6 import page6
 from pages import home, not_found_404
 # Connect the navbar to the index
 from components import navbar
@@ -39,6 +44,9 @@ dash.register_page("Home", layout=home.layout)
 dash.register_page("Page1", layout=page1.layout)
 dash.register_page("Page2", layout=page2.layout)
 dash.register_page("Page3", layout=page3.layout)
+dash.register_page("Page4", layout=page4.layout)
+dash.register_page("Page5", layout=page5.layout)
+dash.register_page("Page6", layout=page6.layout)
 dash.register_page('404_Error', path="/404",layout=not_found_404.layout)
 #-----
 
@@ -98,6 +106,12 @@ def display_page(pathname):
         return page2.layout
     if pathname == '/page3':
         return page3.layout
+    if pathname == '/page4':
+        return page4.layout
+    if pathname == '/page5':
+        return page5.layout
+    if pathname == '/page6':
+        return page6.layout
     else: # if redirected to unknown link
         # return "404 Page Error! Please choose a link"
         
@@ -126,13 +140,11 @@ def display_page(pathname):
         return layout404
 
 
-# ...código existente...
-server = app.server
+# Instanciar um servidor de produção (não Flask) para o Dash
 
 if __name__ == "__main__":
     app.run()
-    # input("Press enter to proceed...")
 
 # if __name__ == "__main__":
-#     app.run_server(debug=True)
+#     app.run(debug=True)
 

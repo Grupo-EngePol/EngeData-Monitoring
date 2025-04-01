@@ -19,9 +19,9 @@ df = px.data.medals_wide(indexed=True)
 
 def get_callback_histogram():
     @callback(
-        Output("histograms-graph", "figure"),
-        Input("histograms-mean", "value"),
-        Input("histograms-std", "value"),
+        Output("histograms-graph6", "figure"),
+        Input("histograms-mean6", "value"),
+        Input("histograms-std6", "value"),
     )
     def display_color(mean, std):
         data = np.random.normal(mean, std, size=500)
@@ -31,8 +31,8 @@ def get_callback_histogram():
 
 def get_callback_figtemplate():
     @callback(
-        Output("histograms-graph", "figure",allow_duplicate=True),
-        Input("color-mode-switch_pg3", "value"),
+        Output("histograms-graph6", "figure",allow_duplicate=True),
+        Input("color-mode-switch_pg6", "value"),
         prevent_initial_call=True
     )
     def update_figure_template(switch_on):
@@ -47,8 +47,8 @@ def get_callback_figtemplate():
 
 def get_callback_logotemplate():
     @callback(
-        Output('row_logosidebar', "children",allow_duplicate=True),
-        Input("color-mode-switch_pg3", "value"),
+        Output('row_logosidebar6', "children",allow_duplicate=True),
+        Input("color-mode-switch_pg6", "value"),
         prevent_initial_call=True
     )
     def update_logo_template(switch_on):
