@@ -67,6 +67,7 @@ app.layout = html.Div(children=[
     dbc.Row([
     dcc.Store(id='digest-loaddata-pg1',storage_type='session'),
     dcc.Store(id='digest-loaddata-pg2',storage_type='session'),
+    dcc.Store(id='storage_database_raw',storage_type='memory'),
     dcc.Store(id='temperature_profile_computed_data',storage_type='session'),
     dcc.Location(id='url', refresh=False),
     ]),
@@ -143,7 +144,7 @@ def display_page(pathname):
 # Instanciar um servidor de produção (não Flask) para o Dash
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
 
 # if __name__ == "__main__":
 #     app.run(debug=True)
