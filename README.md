@@ -2,15 +2,15 @@
 
 ## Bibliotecas Python (requirements.txt)
 
-dash
-dash-bootstrap-components
-waitress
-pandas
-numpy
-plotly
-dash-mantine-components==0.12.1
-dash-iconify==0.1.2
-dash-bootstrap-templates
+* dash
+* dash-bootstrap-components
+* waitress
+* pandas
+* numpy
+* plotly
+* dash-mantine-components==0.12.1
+* dash-iconify==0.1.2
+* dash-bootstrap-templates
 
 ## Atualizar o pip install
 
