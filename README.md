@@ -52,6 +52,7 @@ dash-bootstrap-templates
 ## Instalar pacotes
 
     pip install -r requirements.txt
+    python -m pip install 'pacote'
 
 ## Configurando user.name e user.email no Git Bash
 
