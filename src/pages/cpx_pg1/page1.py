@@ -48,7 +48,6 @@ from dash_bootstrap_templates import load_figure_template
 load_figure_template(["minty", "minty_dark"])
 # load_figure_template(["LUX"])
 
-df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/solar.csv')
 
 
 color_mode_switch =  html.Span(
