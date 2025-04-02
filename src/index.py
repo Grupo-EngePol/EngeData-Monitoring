@@ -14,9 +14,9 @@ from dash_bootstrap_templates import load_figure_template
 # import dash_daq as daq
 # import datetime
 # load_figure_template(["minty"])
-import waitress
+from waitress import serve
 from threading import Timer
-
+import webbrowser
 
 
 # Connect to your app pages
@@ -142,10 +142,37 @@ def display_page(pathname):
 
 
 # Instanciar um servidor de produção (não Flask) para o Dash
+server = app.server
 
-if __name__ == "__main__":
-    app.run(debug=True)
+    # Modo de produção:
+production = True
+# production = False
 
-# if __name__ == "__main__":
-#     app.run(debug=True)
+    # Modo de depuração:
+debug_mod = False
+# debug_mod = True
+
+# Host ID:
+# host_id = socket.gethostbyname(socket.gethostname())
+host_id ='127.0.0.1'
+
+def open_browser():
+    """
+    Open browser to localhost
+    """
+    webbrowser.open_new('http://'+host_id+':8050/')
+
+
+if production==True:
+    Timer(1, open_browser).start()  # Wait a second and then start the web page
+    if __name__ == "__main__":
+        # http://127.0.0.1:8080/
+        # http://192.168.56.1:8080/
+        serve(server, host=host_id, port=8050, threads=10)
+
+else:
+    if __name__ == "__main__":
+        app.run(debug=debug_mod, host=host_id, port=8050)
+
+
 
