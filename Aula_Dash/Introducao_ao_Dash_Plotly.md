@@ -20,6 +20,7 @@ Com o terminal ou prompt de comando aberto, execute o seguinte comando para atua
 
 ```bash
 python -m pip install --upgrade pip
+python.exe -m pip install --upgrade pip
 ```
 
 ### **Ambiente Virtual**
