@@ -36,3 +36,5 @@ urllib3==2.3.0
 waitress==3.0.2
 Werkzeug==3.0.6
 zipp==3.21.0
+dash-chart-editor
+dash-ag-grid
