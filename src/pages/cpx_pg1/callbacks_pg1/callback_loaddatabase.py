@@ -72,8 +72,7 @@ def parse_contents(contents, filename):
         children = html.Div(["Tipo de arquivo não suportado."])
 
     # >>> Aqui o ajuste-chave <<<
-    # Linha 75, alterar set_index para False para não remover a primeira coluna
-    df = EnDT.ensure_datetime(df, time_col=None, set_index=False)
+    df = EnDT.ensure_datetime(df, time_col=None, set_index=True)
 
     # Normaliza nomes de colunas (remove espaços/acentos invisíveis)
     df.columns = pd.Index(map(str, df.columns)).str.strip()
