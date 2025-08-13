@@ -41,6 +41,10 @@ navbar = dbc.Navbar(#className='bg-primary',
                                     # push later links to end of nav
                                     className="me-auto",
                                 ),
+                                dbc.NavItem(dbc.NavLink("Page4",id='navlink_pg4',href='/page4',disabled=False)),
+                                dbc.NavItem(dbc.NavLink("Page5",id='navlink_pg5',href='/page5',disabled=False)),
+                                dbc.NavItem(dbc.NavLink("Page6",id='navlink_pg6',href='/page6',disabled=False)),
+                                
                                 
                                 dbc.NavItem(dbc.NavLink("Help")),
                                 dbc.NavItem(dbc.NavLink("About")),

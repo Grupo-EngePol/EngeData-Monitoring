@@ -41,7 +41,7 @@ import io
 from .callbacks_pg1 import callback_dateload_heatmap
 from .callbacks_pg1 import callback_loaddatabase
 from .callbacks_pg1 import callback_aggrid_table
-from .callbacks_pg1 import callback_dce_plots
+from .callbacks_pg1 import callback_simple_plots  # Alterado de callback_dce_plots
 from .callbacks_pg1 import callback_tooltips_notifications
 
 from dash_bootstrap_templates import load_figure_template
@@ -91,8 +91,8 @@ setup_comparison_box = dbc.Card(className='bg-dark',
                                 "Carregar dados",
                                 id='open',
                                 n_clicks=0,
-                                leftIcon=DashIconify(icon='vscode-icons:file-type-excel',width=30), size="sm",
-                            variant="gradient", 
+                                leftIcon=DashIconify(icon="mdi:upload"), size="sm",
+                            variant="gradient",
                             gradient={"from": "orange", "to": "red"}),
 
 
@@ -138,10 +138,10 @@ setup_comparison_box = dbc.Card(className='bg-dark',
                     html.Div([
                         # html.Button("Pre-tratar dados",id = 'pretreatment-data-btn'),
 
-                        dmc.Button("Preview em tabela",id='pretable-data-btn',
+                        dmc.Button("Preview em tabela", id='pretable-data-btn',
                                    disabled=True,
-                                    leftIcon=DashIconify(icon='fluent:table-sparkle-20-filled',width=30), size="sm",
-                                    variant="gradient", gradient={"from": "orange", "to": "red"}),
+                                   leftIcon=DashIconify(icon='fluent:table-sparkle-20-filled', width=30), size="sm",
+                                   variant="gradient", gradient={"from": "orange", "to": "red"}),
                         dbc.Tooltip(
                                 children= html.Div([dbc.Alert("A seguir os dados são resumidos em uma tabela dinâmica, em que alguns filtros podem ser aplicados,"
                                 "A aplicação desses filtros não será efetiva na base de dados", color='#F2989C')], style={"backgroundColor": '#F2989C'}),
@@ -159,10 +159,10 @@ setup_comparison_box = dbc.Card(className='bg-dark',
                         # html.Button("Pre-tratar dados",id = 'pretreatment-data-btn'),
 
                         dmc.Button("Visualização",id='view-data-btn',
-                                   disabled=True,
+                                    disabled=True,
                                     leftIcon=DashIconify(icon='cib:mathworks',width=30), size="sm",
                                     variant="gradient", gradient={"from": "orange", "to": "red"}),
-                        
+
                         dbc.Tooltip(
                                 children= html.Div([dbc.Alert("A seguir os dados serão exportados para um componente de visualização e plotagem personalizada,"
                                 "O correto funcionamento deste componente, depende do tamanho dos dados", color='#F2989C')], style={"backgroundColor": '#F2989C'}),
@@ -186,7 +186,7 @@ setup_comparison_box = dbc.Card(className='bg-dark',
                 dbc.Row([
                     dbc.Col([
                         html.Div([
-                            dmc.Text("Carregamento de dados e visualização de tabela-resumo",color='dimmed'),
+                            dmc.Text("Carregamento de dados e visualização de tabela-resumo", c='dimmed'),
                             ])
                     ], width=12)
                     ]),
@@ -199,68 +199,73 @@ setup_comparison_box = dbc.Card(className='bg-dark',
         ],
     )
 
+# ============================
+# Layout da página
+# ============================
+# Esta parte define o layout da página usando componentes do Dash e Bootstrap.
+# Inclui:
+# - Um switch para alternar entre temas claro e escuro (color_mode_switch)
+# - Uma seção de carregamento e pré-processamento de dados (setup_comparison_box),
+#   onde o usuário pode carregar arquivos Excel e pré-visualizar dados.
+# - Um espaço para mostrar mensagens de status do carregamento.
+# - Um grid/table para mostrar pré-visualizações detalhadas.
+# - Componente de visualização e edição de gráficos (Dash Chart Editor).
+#
+# O layout é organizado em linhas (Rows) e colunas (Cols) para facilitar a responsividade.
+
 layout = dbc.Container(
         fluid=True,
         children=[
+            # Botão/deslizante para alternar tema claro/escuro
             html.Div(color_mode_switch),
             dbc.Row(
                 [
+                    # Coluna da esquerda, contendo o box para upload e pré-processamento de dados
                     dbc.Col(
-                        [  setup_comparison_box 
+                        [  setup_comparison_box
                         ], width=6
                     ),
 
+                    # Coluna da direita, para mensagens de status do carregamento e processamento
                     dbc.Col([dbc.Row(
-                        
-                        # dcc.Loading(id='loading-data-pretreated-pg1',
-                        #                         type='cube',
-                        #                         color='#78C2AD',
-                        #                         children=html.Div(children='',id='load_data_check'))
-
-                        html.Div(children='',id='load_data_check')                        
-                                                        ,align='center',
-                                                style={"marginTop": "20%"}
-                                                
-                                                )
-                                                ])
+                        # Div que exibe mensagens de status relacionadas ao carregamento dos dados.
+                        html.Div(children='',id='load_data_check')
+                        ,align='center',
+                        style={"marginTop": "20%"}
+                    )])
 
 
-                    ],
-                    style={
-                            "marginTop": "3%"
-                        }),
+                ],
+                style={
+                        "marginTop": "3%"
+                    }),
 
-            dbc.Row(dcc.Loading(id='loading-table-pretreated-pg1',
-                                                type='cube',
-                                                color='#78C2AD',
-                                                children=html.Div(children=[],id='grid_table')), style={
-                            "marginTop": "3%"
-                        }),
+            # Linha que contem uma tabela dinâmica (grid) para mostrar dados pré-processados
+            dbc.Row(dcc.Loading(
+                    id='loading-table-pretreated-pg1',
+                    type='cube',
+                    color='#78C2AD',
+                    children=html.Div(children=[],id='grid_table')
+                ), style={"marginTop": "3%"}
+            ),
 
+            # Linha para exibir o componente de visualização e plotagem personalizado
+            # usando Dash Chart Editor para manipulação avançada dos gráficos.
             dbc.Row(
                 children=[
-                dcc.Loading(id='loading-table-pretreated-pg1',
-                                                type='cube',
-                                                color='#78C2AD',
-                                                children=html.Div(id='dce_view_host',children=[]))
-                
-                
-                    # html.Div(
-                    #     [   html.H4("Dash Chart Editor Demo with the Plotly Solar dataset"),
-                    #         dce.DashChartEditor(
-                    #             id="chart-editor",
-                    #             dataSources=df.to_dict("list"),
-                    #         ),
-                    #         # dmc.Affix(
-                    #         #     dmc.Button("Save this chart", id="add-to-layout"),
-                    #         #     position={"bottom": 20, "left": 20},
-                    #         # ),
-                    #     ],
-                    # ),
+                dcc.Loading(
+                    id='loading-table-pretreated-pg1',
+                    type='cube',
+                    color='#78C2AD',
+                    children=html.Div(id='dce_view_host',children=[])
+                )
+                # Observação: o Dash Chart Editor pode acessar um dataset para
+                # edição interativa de gráficos, personalizando visualizações.
+                ],
+                style={"marginTop": "3%"}
+            )
 
-                ],style={"marginTop": "3%"})
-
-            ]
+        ]
     )
 
 
@@ -271,17 +276,35 @@ layout = dbc.Container(
 # callback_dateload_heatmap.get_callback_figtemplate()
 # callback_dateload_heatmap.get_callback_logotemplate()
 
+# ============================
+# Callbacks principais
+# ============================
+# Aqui são chamados callbacks definidos em módulos de callback externos,
+# que cuidam da lógica por trás dos componentes:
+# - callback_loaddatabase: processamento e carregamento dos dados
+# - callback_aggrid_table: atualização da tabela dinâmica com dados carregados
+# - callback_dce_plots: geração e controle da interface de plotagem (gráficos personalizados)
+#
+# Comentados estão callbacks relacionados a tooltips (dicas visuais para botões),
+# que podem ser ativados se desejar.
+#
+# Ao final, há um clientside callback implementado em JavaScript,
+# responsável por atualizar o tema do Bootstrap (claro/escuro) baseado
+# no estado do switch.
+
 callback_loaddatabase.get_callback_nodal()
 callback_loaddatabase.get_callback_content()
 callback_aggrid_table.get_callback_update_grid()
-callback_dce_plots.get_callback_chart_editor()
+callback_simple_plots.register_simple_plot_callbacks() # Alterado de callback_dce_plots
 # callback_tooltips_notifications.get_callback_btn_tooltip1()
 # callback_tooltips_notifications.get_callback_btn_tooltip2()
 
+# Client-side callback para mudar o tema Bootstrap da página
 clientside_callback(
     """
     (switchOn) => {
-        document.documentElement.setAttribute('data-bs-theme', switchOn ? 'light' : 'dark');  
+        // Atualiza atributo data-bs-theme do html para trocar o tema
+        document.documentElement.setAttribute('data-bs-theme', switchOn ? 'light' : 'dark');
         return window.dash_clientside.no_update
     }
     """,

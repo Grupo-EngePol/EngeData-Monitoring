@@ -35,8 +35,12 @@ nav = navbar
 
 #-----
 from app import app_builder
+from utils.cache_df import init_cache   # <<< NOVO
+
 app = app_builder()
-# server = app.server
+
+# inicializa o cache com o servidor Flask do Dash
+init_cache(app.server)                  # <<< NOVO
 
 # app = dash.Dash(__name__, use_pages=True, pages_folder="",external_stylesheets=[dbc.themes.BOOTSTRAP, dbc.icons.FONT_AWESOME])
 # app.config.suppress_callback_exceptions = True

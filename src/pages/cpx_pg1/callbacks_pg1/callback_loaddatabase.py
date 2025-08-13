@@ -14,9 +14,35 @@ from dash_iconify import DashIconify
 import json
 import dash_mantine_components as dmc
 
+from utils import ensureDatetime as EnDT
+
 import base64
 from io import BytesIO
 import os
+
+from utils.cache_df import put_df
+
+
+def _coerce_numeric_col(s: pd.Series) -> pd.Series:
+    """Converte série para numérica quando possível, tratando vírgula decimal e milhares."""
+    if pd.api.types.is_numeric_dtype(s):
+        return s
+    try:
+        s_str = s.astype(str)
+        s_str = s_str.str.replace("\u00A0", "", regex=False)
+        s_str = s_str.str.replace(" ", "", regex=False)
+        # Heurística simples para vírgula decimal
+        if s_str.str.contains(",").mean() > 0.5 and s_str.str.contains(".").mean() > 0.5:
+            s_str = s_str.str.replace(".", "", regex=False)
+            s_str = s_str.str.replace(",", ".", regex=False)
+        else:
+            s_str = s_str.str.replace(",", ".", regex=False)
+        try:
+            return pd.to_numeric(s_str)
+        except Exception:
+            return s
+    except Exception:
+        return s
 
 
 def parse_contents(contents, filename):
@@ -24,37 +50,49 @@ def parse_contents(contents, filename):
     decoded = base64.b64decode(content_string)
 
     if filename.endswith(".xlsx"):
-        df = pd.read_excel(BytesIO(decoded),index_col=0, header=[0], engine='openpyxl')
-        flag_load=False
+        df = pd.read_excel(BytesIO(decoded), index_col=0, header=0, engine='openpyxl')
+        flag_load = False
+        children = html.Div([ dmc.Alert("Arquivo carregado com sucesso!", title="Success!", color="green") ])
 
-        return df, html.Div([
-            dmc.Alert("Arquivo carregado com sucesso!", title="Success!", color="green"),
-            ]), flag_load
     elif filename.endswith(".csv"):
-        df = pd.read_csv(BytesIO(decoded),index_col=0, header=[0],sep=';')
-        flag_load=False
+        bio = BytesIO(decoded)
+        # Inferir separador automaticamente
+        df = pd.read_csv(bio, index_col=0, header=0, sep=None, engine="python")
+        flag_load = False
+        children = html.Div([ dmc.Alert("Arquivo carregado com sucesso!", title="Success!", color="green") ])
 
-        return df, html.Div([
-            dmc.Alert("Arquivo carregado com sucesso!", title="Success!", color="green"),
-            ]), flag_load
-    elif filename.endswith('h5'):
-        df = pd.read_hdf(os.path.join(os.getcwd(),'Backend','data',filename))
-        flag_load=False
-        return df, html.Div([
-            "Arquivo carregado com sucesso! :D."
-        ]),flag_load
-    
+    elif filename.endswith(".h5"):
+        df = pd.read_hdf(os.path.join(os.getcwd(), 'Backend', 'data', filename))
+        flag_load = False
+        children = html.Div(["Arquivo carregado com sucesso! :D."])
+
     else:
-        flag_load=True
-        return pd.DataFrame(), html.Div([
-            "Tipo de arquivo não suportado."
-        ]),flag_load
+        flag_load = True
+        df = pd.DataFrame()
+        children = html.Div(["Tipo de arquivo não suportado."])
+
+    # >>> Aqui o ajuste-chave <<<
+    # Linha 75, alterar set_index para False para não remover a primeira coluna
+    df = EnDT.ensure_datetime(df, time_col=None, set_index=False)
+
+    # Normaliza nomes de colunas (remove espaços/acentos invisíveis)
+    df.columns = pd.Index(map(str, df.columns)).str.strip()
+
+    # Conversão de colunas numéricas representadas como string (ex.: vírgula decimal)
+    for col in df.columns:
+        if col == "data":
+            continue
+        df[col] = _coerce_numeric_col(df[col])
+
+    return df, children, flag_load
+
+
 
 
 def get_callback_nodal():
     @callback(
         Output("modal", "is_open"),
-        Output("output-data-upload", "children",allow_duplicate=True),
+        Output("output-data-upload", "children", allow_duplicate=True),
         Input("open", "n_clicks"),
         Input("close", "n_clicks"),
         State("modal", "is_open"),
@@ -74,7 +112,7 @@ def get_callback_nodal():
     return
 
 def get_callback_content():
-    # Primeiro dcc Store para almazenar o dataframe raw e gerar os options para os Dropdown menus (Store Callback)
+    # Primeiro dcc Store para armazenar o dataframe raw e gerar os options para os Dropdown menus (Store Callback)
     @callback([ Output('storage_database_raw', 'data'),
                 Output("output-data-upload", "children"),
                 Output('pretable-data-btn','disabled'),
@@ -89,7 +127,7 @@ def get_callback_content():
         if contents == None or filename==None:
             raise PreventUpdate
         else:
-            df, children,flag_load = parse_contents(contents, filename)
+            df, children, flag_load = parse_contents(contents, filename)
             # some expensive data processing step by ex:
             # cleaned_df = slow_processing_step(value)
             alert=dbc.Alert(
@@ -107,7 +145,9 @@ def get_callback_content():
                 ),
                 ]
             ,duration=8000,style={"backgroundColor": '#78C2AD'})
-
-        return df.to_json(date_format='iso', orient='split'),children,False,False,alert
+        
+        df_key = put_df(df)  # <<< guarda o DF no cache e retorna uma chave
+        return df_key, children, False, False, alert
+    
     return
 
